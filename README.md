@@ -24,6 +24,13 @@ npm install
 npm run dev
 ```
 
+The server will start on `http://localhost:3000` and will also be accessible on your local network.
+
+**Accessing from other devices on your local network:**
+- The dev server will display the network URL in the terminal (e.g., `http://192.168.1.xxx:3000`)
+- Open this URL on any device connected to the same Wi-Fi network
+- Perfect for testing on mobile devices!
+
 3. Build for production:
 ```bash
 npm run build

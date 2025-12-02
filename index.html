@@ -2,11 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- iOS Safari Theme Configuration -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pomodoro">
+  
+  <!-- Theme Colors for iOS Safari -->
+  <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#0a0a0f">
+  
+  <!-- Additional Theme Support -->
+  <meta name="msapplication-navbutton-color" content="#0a0a0f">
+  <meta name="msapplication-TileColor" content="#0a0a0f">
+  
+  <!-- Prevent iOS Safari from changing theme -->
+  <meta name="color-scheme" content="dark">
+  
   <title>Pomodoro Timer</title>
   <link rel="stylesheet" href="/src/styles.css">
+  
+  <!-- Preload critical theme styles -->
+  <style>
+    /* Critical theme styles for immediate rendering - covers status bar area */
+    html {
+      background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+      background-attachment: fixed;
+      background-size: cover;
+      color-scheme: dark;
+      padding-top: env(safe-area-inset-top);
+    }
+    body {
+      background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+      background-attachment: fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      padding-top: env(safe-area-inset-top);
+    }
+    /* Cover status bar area immediately */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: env(safe-area-inset-top);
+      background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+      background-attachment: fixed;
+      background-size: cover;
+      z-index: 10000;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>

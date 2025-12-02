@@ -14,28 +14,59 @@
   --accent: #ff6b6b;
   --accent-hover: #ff8787;
   --shadow: rgba(0, 0, 0, 0.3);
+  
+  /* iOS Safari theme support */
+  color-scheme: dark;
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
   background-attachment: fixed;
+  background-size: cover;
+  background-position: center center;
   min-height: 100vh;
+  min-height: -webkit-fill-available;
   padding: 0;
   margin: 0;
+  padding-top: env(safe-area-inset-top);
   color: var(--text-primary);
   overflow-x: visible;
   overflow-y: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Ensure background covers full screen on iOS Safari including status bar */
+  width: 100%;
+  position: relative;
+}
+
+/* Cover status bar area with theme background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top);
+  min-height: env(safe-area-inset-top);
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  z-index: 10000;
+  pointer-events: none;
 }
 
 #app {
   min-height: 100vh;
+  min-height: -webkit-fill-available;
   display: flex;
   flex-direction: column;
   padding: 20px;
+  padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
   overflow: visible;
+  width: 100%;
+  height: 100%;
+  height: -webkit-fill-available;
 }
 
 .container {
@@ -129,6 +160,9 @@ body {
   right: 0;
   width: 100%;
   padding: 20px;
+  padding-top: max(20px, env(safe-area-inset-top));
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
   z-index: 100;
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
@@ -136,6 +170,27 @@ body {
   will-change: opacity, transform, visibility;
   box-shadow: none;
   border-bottom: none;
+  /* Ensure background extends behind status bar on iOS - covers entire top area */
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center top;
+  /* Extend background to cover safe area */
+  padding-top: calc(env(safe-area-inset-top) + 20px);
+  min-height: calc(env(safe-area-inset-top) + 60px);
+}
+
+/* Ensure status bar area is covered */
+.header-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top);
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+  background-attachment: fixed;
+  z-index: -1;
 }
 
 .header-top.hidden {
@@ -733,11 +788,11 @@ body {
     flex-direction: column;
     justify-content: space-between;
     min-height: calc(100vh - 70px);
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   .glass-card::before {
@@ -846,16 +901,56 @@ body {
 
 /* Safari-specific fixes */
 @supports (-webkit-touch-callout: none) {
+  /* Ensure backdrop-filter works on iOS Safari */
   .glass-card {
     -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    /* Fallback for older iOS versions */
+    background: rgba(255, 255, 255, 0.08);
   }
   
   .btn {
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
   }
   
   .btn-secondary {
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  
+  /* Fix for iOS Safari background rendering */
+  html {
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+    background-attachment: fixed;
+    color-scheme: dark;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    background-size: cover;
+    /* Ensure dark theme is applied */
+    color-scheme: dark;
+  }
+  
+  /* Ensure gradients render properly */
+  .title {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Ensure status bar area matches theme */
+  .header-top {
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+    background-attachment: fixed;
+  }
+  
+  /* Prevent iOS Safari from applying light theme */
+  * {
+    color-scheme: dark;
   }
 }
 
@@ -871,12 +966,31 @@ body {
 html {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  /* Ensure full height on iOS Safari */
+  height: 100%;
+  height: -webkit-fill-available;
+  /* Prevent background color flash on iOS */
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+  background-attachment: fixed;
+  /* Force dark theme on iOS Safari */
+  color-scheme: dark;
+  /* Prevent iOS Safari from changing appearance */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Fix for iOS Safari viewport */
 @supports (-webkit-touch-callout: none) {
+  html {
+    height: -webkit-fill-available;
+    height: 100%;
+  }
+  
   body {
     min-height: -webkit-fill-available;
+    min-height: 100vh;
+    /* Prevent bounce scrolling on iOS */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
   }
   
   .container {
@@ -884,6 +998,71 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Account for safe areas */
+    padding-top: max(100px, env(safe-area-inset-top));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Fix header positioning on iOS */
+  .header-top {
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+  
+  /* Ensure glass effects work on iOS - but transparent on mobile */
+  .glass-card {
+    /* Only add background on desktop, mobile should be transparent */
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+  }
+  
+  /* On mobile iOS Safari, ensure glass-card is fully transparent */
+  @media (max-width: 640px) {
+    .glass-card {
+      background: transparent !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+  }
+  
+  /* Ensure #app container has proper background */
+  #app {
+    background: transparent;
+    /* Ensure it doesn't interfere with body background */
+  }
+  
+  /* Enhanced fix for iOS Safari status bar area */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    min-height: env(safe-area-inset-top);
+    max-height: env(safe-area-inset-top);
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center top;
+    z-index: 10000;
+    pointer-events: none;
+  }
+  
+  /* Ensure header-top background covers status bar area */
+  .header-top {
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center top;
+  }
+  
+  .header-top::before {
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1e 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center top;
   }
 }
 
